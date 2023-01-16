@@ -126,35 +126,37 @@ function turnHoursToMinutes(moviesArray) {
 function bestYearAvg(moviesArray) {
    
     const duplicateAvr = [];
-
+    //1st. Make a copy or the original Array
     const newArr = JSON.parse(JSON.stringify(moviesArray));
 
+    //Loop the new Array
     newArr.forEach((item) => {
         
         let year = item.year;
-
+        //Make a new Array where movies are filter by the YEAR
         const yearArr = newArr.filter(item => item.year == year)
-
+        //Calculate the average socre in movies of the same year
         let numAv = yearArr
             .map(item => ('score' in item) && typeof item.score === 'number' ? item.score : item.score = 0)
             .reduce((ac, cur) => ac + cur)  / yearArr.length
 
         let average = Math.round(numAv * 100) / 100
- 
+        //Create a new object with the year and the average and push it to the array(this will give duplicate values)
         duplicateAvr.push({
             year: year,
             average: average
         })
               
     })
-
+    //keep only unique values for the duplicate array;
     const finalArr = duplicateAvr.filter((item, index) => duplicateAvr.findIndex(year => item.year === year.year) === index)
-    
+    //sort the array to keep on the top the highest score values;
     finalArr.sort((a, b) => b.average - a.average)
 
     if (finalArr.length < 1) {
         return null
     } else {
+        //if more than 1 object have the same average sort them to have the oldest
         const oldest = finalArr.filter((item) => item.average === finalArr[0].average);
         oldest.sort((a,b) => a.year - b.year)
 
