@@ -125,39 +125,50 @@ function turnHoursToMinutes(moviesArray) {
 // BONUS - Iteration 8: Best yearly score average - Best yearly score average
 function bestYearAvg(moviesArray) {
    
-    const duplicateAvr = [];
     //1st. Make a copy or the original Array
     const newArr = JSON.parse(JSON.stringify(moviesArray));
+    
+    const yearsAvr = [];
+    const years = [];
 
     //Loop the new Array
     newArr.forEach((item) => {
         
         let year = item.year;
-        //Make a new Array where movies are filter by the YEAR
-        const yearArr = newArr.filter(item => item.year == year)
-        //Calculate the average socre in movies of the same year
-        let numAv = yearArr
-            .map(item => ('score' in item) && typeof item.score === 'number' ? item.score : item.score = 0)
-            .reduce((ac, cur) => ac + cur)  / yearArr.length
 
-        let average = Math.round(numAv * 100) / 100
-        //Create a new object with the year and the average and push it to the array(this will give duplicate values)
-        duplicateAvr.push({
-            year: year,
-            average: average
-        })
+        if(years.includes(year)) {
+            //to prevent duplicate values en new array of obj
+            return
+        } else {
+            
+            years.push(year);
+            //Make a new Array where movies are filter by the YEAR
+            const yearArr = newArr.filter(item => item.year == year)
+            
+            //Calculate the average socre in movies of the same year
+            let numAv = yearArr
+                .map(item => ('score' in item) && typeof item.score === 'number' ? item.score : item.score = 0)
+                .reduce((ac, cur) => ac + cur)  / yearArr.length
+    
+            let average = Math.round(numAv * 100) / 100
+            //Create a new object with the year and the average and push it to the array
+            yearsAvr.push({
+                year: year,
+                average: average
+            })
+        }
               
     })
-    //keep only unique values for the duplicate array;
-    const finalArr = duplicateAvr.filter((item, index) => duplicateAvr.findIndex(year => item.year === year.year) === index)
+    
     //sort the array to keep on the top the highest score values;
-    finalArr.sort((a, b) => b.average - a.average)
+    yearsAvr.sort((a, b) => b.average - a.average)
+    
 
-    if (finalArr.length < 1) {
+    if (yearsAvr.length < 1) {
         return null
     } else {
         //if more than 1 object have the same average sort them to have the oldest
-        const oldest = finalArr.filter((item) => item.average === finalArr[0].average);
+        const oldest = yearsAvr.filter((item) => item.average === yearsAvr[0].average);
         oldest.sort((a,b) => a.year - b.year)
 
         return `The best year was ${oldest[0].year} with an average score of ${oldest[0].average}`
