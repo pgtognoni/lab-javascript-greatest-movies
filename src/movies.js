@@ -96,25 +96,23 @@ function turnHoursToMinutes(moviesArray) {
     
     const minutesArr = newArr.map(movie => {
         
-        let minutes = 0;
-        let hoursInMin = 0;
+        let timeInMin = 0;
 
-        let duration = movie.duration.split(" ")
+        movie.duration.split(" ")
             .map(item => {
 
-                if(item.match(/h/)){
+                if(item.match(/h/)) {
                     const hour = item.split("h");
-                    hoursInMin = parseInt(hour[0]) * 60;
-                    return hoursInMin
+                    timeInMin += parseInt(hour[0]) * 60;
+                    
                 } else if(item.match(/min/)) {
                     const min = item.split("min");
-                    minutes += parseInt(min[0]);
-                    return minutes
+                    timeInMin += parseInt(min[0]);
+                    
                 }
             })
-            .reduce((ac, cur) => ac + cur)
-
-        movie.duration = duration
+            
+        movie.duration = timeInMin
 
         return movie
     })
@@ -137,14 +135,15 @@ function bestYearAvg(moviesArray) {
         let year = item.year;
 
         if(years.includes(year)) {
-            //to prevent duplicate values en new array of obj
+            //to prevent duplicate values in new array of obj
             return
         } else {
             
             years.push(year);
+            
             //Make a new Array where movies are filter by the YEAR
             const yearArr = newArr.filter(item => item.year == year)
-            
+
             //Calculate the average socre in movies of the same year
             let numAv = yearArr
                 .map(item => ('score' in item) && typeof item.score === 'number' ? item.score : item.score = 0)
