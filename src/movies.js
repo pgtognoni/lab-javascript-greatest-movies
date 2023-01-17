@@ -145,11 +145,8 @@ function bestYearAvg(moviesArray) {
             const yearArr = newArr.filter(item => item.year == year)
 
             //Calculate the average socre in movies of the same year
-            let numAv = yearArr
-                .map(item => ('score' in item) && typeof item.score === 'number' ? item.score : item.score = 0)
-                .reduce((ac, cur) => ac + cur)  / yearArr.length
-    
-            let average = Math.round(numAv * 100) / 100
+            let average = scoresAverage(yearArr);
+
             //Create a new object with the year and the average and push it to the array
             yearsAvr.push({
                 year: year,
@@ -161,15 +158,15 @@ function bestYearAvg(moviesArray) {
     
     //sort the array to keep on the top the highest score values;
     yearsAvr.sort((a, b) => b.average - a.average)
+
+    //if more than 1 object have the same average sort them to have the oldest
+    const oldest = yearsAvr.filter((item) => item.average === yearsAvr[0].average);
+    oldest.sort((a,b) => a.year - b.year)
     
 
     if (yearsAvr.length < 1) {
         return null
     } else {
-        //if more than 1 object have the same average sort them to have the oldest
-        const oldest = yearsAvr.filter((item) => item.average === yearsAvr[0].average);
-        oldest.sort((a,b) => a.year - b.year)
-
         return `The best year was ${oldest[0].year} with an average score of ${oldest[0].average}`
     }
         
